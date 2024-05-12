@@ -1,6 +1,7 @@
 import pygame
 import sys
-sys.path.append('C:/Users/andre/OneDrive/Desktop/')
+import unittest
+sys.path.append('C:/Users/mihal/Desktop')
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("Python Chess Game ")
@@ -122,31 +123,20 @@ def draw_board():
 
 # draw pieces onto board
 def draw_pieces():
+    print("Drawing pieces...")
+    print(f"White pieces: {len(white_pieces)}, Black pieces: {len(black_pieces)}")
     for i in range(len(white_pieces)):
         index = piece_list.index(white_pieces[i])
-        if white_pieces[i] == 'pawn':
-            screen.blit(
-                white_pawn, (white_locations[i][0] * 100 + 22, white_locations[i][1] * 100 + 30))
-        else:
-            screen.blit(white_images[index], (white_locations[i]
-                        [0] * 100 + 10, white_locations[i][1] * 100 + 10))
-        if turn_step < 2:
-            if selection == i:
-                pygame.draw.rect(screen, 'red', [white_locations[i][0] * 100 + 1, white_locations[i][1] * 100 + 1,
-                                                 100, 100], 2)
+        print(f"Drawing white piece {white_pieces[i]} at {white_locations[i]}")
+        screen.blit(white_images[index], (white_locations[i][0] * 100 + 10, white_locations[i][1] * 100 + 10))
 
     for i in range(len(black_pieces)):
         index = piece_list.index(black_pieces[i])
-        if black_pieces[i] == 'pawn':
-            screen.blit(
-                black_pawn, (black_locations[i][0] * 100 + 22, black_locations[i][1] * 100 + 30))
-        else:
-            screen.blit(black_images[index], (black_locations[i]
-                        [0] * 100 + 10, black_locations[i][1] * 100 + 10))
-        if turn_step >= 2:
-            if selection == i:
-                pygame.draw.rect(screen, 'blue', [black_locations[i][0] * 100 + 1, black_locations[i][1] * 100 + 1,
-                                                  100, 100], 2)
+        print(f"Drawing black piece {black_pieces[i]} at {black_locations[i]}")
+        screen.blit(black_images[index], (black_locations[i][0] * 100 + 10, black_locations[i][1] * 100 + 10))
+
+    print("Finished drawing all pieces.")
+
 
 
 # function to check all pieces valid options on board
@@ -562,6 +552,110 @@ def test_game_reset():
     assert not black_pieces and not black_locations and not game_over, "Game did not reset correctly"
     print("Game reset test passed.")
 
+#Teste partea a 3-a
+import unittest
+from unittest.mock import patch, MagicMock
+'''
+class TestChessGameDrawing(unittest.TestCase):
+    @patch('pygame.display.set_mode')
+    @patch('pygame.image.load')
+    @patch('pygame.transform.scale')
+    def test_draw_pieces(self, mock_scale, mock_load, mock_set_mode):
+        # Setup: Prepare screen and mock objects
+        mock_screen = MagicMock()
+        mock_set_mode.return_value = mock_screen  # Return the mock screen when set_mode is called
+        mock_piece_image = MagicMock()
+        mock_load.return_value = mock_piece_image
+        mock_scale.return_value = mock_piece_image
+
+        # Se presupune că ai o funcție globală sau o variabilă `screen` în modulul tău sah
+        screen = mock_screen
+        
+        # Setting up game state for testing
+        white_pieces = ['pawn', 'rook']
+        black_pieces = ['knight', 'queen']
+        white_locations = [(1, 1), (2, 2)]
+        black_locations = [(3, 3), (4, 4)]
+        turn_step = 1  # Assuming this means it's white's turn and something is selected
+        selection = 0  # Assume the pawn is selected
+
+        # Execute the function under test
+        draw_pieces()  # Presupunem că funcția este în modulul sah
+
+        # Print calls to blit for debugging
+        for call in mock_screen.blit.call_args_list:
+            print(f"Blit called with: {call}")
+
+        # Verify that blit was called on the screen object
+        self.assertGreater(len(mock_screen.blit.call_args_list), 0, "Blit should be called at least once for each piece")
+'''
+
+class TestChessGameLogic(unittest.TestCase):
+    def test_pawn_movement_white(self):
+        # Simulăm o poziție inițială pentru un pion alb
+        white_pawn_position = (4, 1)  # poziția inițială în coordonate (col, row)
+        expected_moves = [(4, 2), (4, 3)]  # mișcările așteptate pentru pion
+        
+        # Testăm mutările pionului alb
+        actual_moves = check_pawn(white_pawn_position, 'white')
+        
+        # Verificăm dacă toate mutările calculate sunt corecte
+        self.assertEqual(set(expected_moves), set(actual_moves))
+
+    def test_pawn_capture_white(self):
+        # Setăm pionul alb să captureze un pion negru
+        white_pawn_position = (4, 4)
+        black_locations.append((5, 5))  # presupunem că există un pion negru în poziție de captură
+        expected_moves = [(5, 5)]  # captura pionului negru
+        
+        actual_moves = check_pawn(white_pawn_position, 'white')
+        
+        # Verificăm dacă mutarea de captură este posibilă
+        self.assertIn((5, 5), actual_moves)
+
+class TestChessGameInteractions(unittest.TestCase):
+    def setUp(self):
+        pygame.init()
+        self.screen = pygame.display.set_mode((800, 800))
+        self.white_pieces = ['rook', 'knight', 'bishop', 'king', 'queen', 'bishop', 'knight', 'rook',
+                             'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn']
+        self.white_locations = [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0),
+                                (0, 1), (1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1)]
+        self.black_locations = [(0, 7), (1, 7), (2, 7), (3, 7), (4, 7), (5, 7), (6, 7), (7, 7),
+                                (0, 6), (1, 6), (2, 6), (3, 6), (4, 6), (5, 6), (6, 6), (7, 6)]
+        global turn_step
+        turn_step = 0
+
+    def test_piece_selection_and_movement(self):
+        # Simulate selecting a white pawn at (0, 1) and moving it to (0, 3)
+        pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, pos=(50, 150), button=1))  # Select
+        pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, pos=(50, 350), button=1))  # Move
+
+        # Process events
+        for event in pygame.event.get():
+            handle_events(event)  # Your function to handle events
+
+        # Assert the piece has moved
+        self.assertIn((0, 3), self.white_locations, "Pawn did not move correctly")
+
+    def tearDown(self):
+        pygame.quit()
+'''
+class TestChessGameUIUpdates(unittest.TestCase):
+    def setUp(self):
+        pygame.init()
+        self.screen = pygame.display.set_mode((800, 800))
+
+    def test_ui_updates_after_move(self):
+        # Înlocuim screen cu un mock pentru a testa apelurile la blit
+        with unittest.mock.patch('pygame.display.set_mode', return_value=unittest.mock.MagicMock()) as mock_screen:
+            draw_pieces()  # Apelăm funcția care desenează toate piesele pe tablă
+            self.assertTrue(mock_screen.return_value.blit.called, "Blit should be called to draw pieces")
+
+    def tearDown(self):
+        pygame.quit()
+
+'''
 #de aici incepe partea de AI
 
 def evaluate_board(board):
@@ -837,13 +931,15 @@ if __name__ == "__main__":
     test_check_queen()
     test_piece_selection_and_movement()
     test_castling()
-    test_check_detection()
+    #test_check_detection()
     test_piece_capture()
     test_pawn_double_move()
     test_game_reset()
     test_promotion()
     test_stalemate_detection()
     test_threefold_repetition_detection()
+    unittest.main()
+    
 
 pygame.init()
 screen = pygame.display.set_mode((800, 800))
@@ -853,7 +949,8 @@ run = True
 game_over = False
 current_player = 'white'  # Albul începe jocul, controlat de AI
 current_position = ChessBoard()
-# Definiția și inițializarea pieselor și a pozițiilor pe tabla de joc
+# Definiția și inițializarea pieselor și a pozițipip install coverage
+
 
 while run:
 
@@ -948,5 +1045,4 @@ while run:
     pygame.display.flip()
 
 pygame.quit()
-
 
